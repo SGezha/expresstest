@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>HLS Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .input {
+            margin: 20px;
+            height: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="display: flex;" class="input">
+        <input type="text" value="/hls/kiminonawa/kiminonawa_1/kiminonawa_1.m3u8" style="width: 400px;" id="url">
+        <button onclick="handleClick()">Загрузить тест видео</button>
+    </div>
+    <video id="video" width="500" height="500" style="width: 100%; height: 100%;" src="/hls/kuroku_2/kuroku_2_1-3/output.m3u8" controls></video>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        function handleClick() {
+            const video = document.getElementById('video');
+            const videoSrc = document.querySelector('#url').value;
+
+            console.log(videoSrc)
+
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+
+                hls.loadSource(videoSrc);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    video.play();
+                });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = videoSrc;
+                video.addEventListener('loadedmetadata', () => {
+                    video.play();
+                });
+            }
+        }
+
+    </script>
+</body>
+
+</html>
