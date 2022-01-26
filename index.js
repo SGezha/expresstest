@@ -6,7 +6,27 @@ app.get('/', (req, res) => {
     return res.status(200).sendFile(`${__dirname}/client.html`);
 });
 
-const server = app.listen(3000);
+app.get('/list', (req, res) => {
+    let needRender = [];
+    let hlsFolder = fs.readdirSync('hls')
+
+    hlsFolder.forEach((anime) => {
+        if(anime.includes('.mp4')) {
+        } else {
+            let folder = fs.readdirSync(`hls/${anime}`)
+            console.log(folder)
+            folder.forEach(seria => {
+                let need = fs.readdirSync(`hls/${anime}/${seria}`).filter(a => a.includes('m3u8'))
+                needRender.push(`https://anime.smotrel.net/hls/${anime}/${seria}/${need}`)
+            })
+        }
+    })
+
+    console.log(needRender)
+    return res.status(200).send(needRender.toString().split(',').join('<br>'));
+});
+
+const server = app.listen(9000);
 
 new hls(server, {
     provider: {
